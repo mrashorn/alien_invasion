@@ -64,6 +64,8 @@ class AlienInvasion:
         """Start a new game when the player clicks Play."""
         button_clicked = self.play_button.rect.collidepoint(mouse_pos)
         if button_clicked and not self.stats.game_active:
+            # Reset the game statistics
+            self.settings.initialize_dynamic_settings()
             self._start_game()
         
 
@@ -139,6 +141,7 @@ class AlienInvasion:
         if not self.aliens:
             self.bullets.empty() # Destroy existing bullets
             self._create_fleet()
+            self.settings.increase_speed()
 
     
     def _update_aliens(self):
@@ -202,7 +205,8 @@ class AlienInvasion:
         ship_height = self.ship.rect.height
         available_space_y = (self.settings.screen_height - (3 * alien_height
             ) - ship_height)
-        number_rows = available_space_y // (2 * alien_height)
+        number_rows = (available_space_y // (2 * alien_height)) - 2 
+        # Reduced alien rows by two so the game is more playable.
 
         # Create full fleet of aliens
         for row_number in range(number_rows):
