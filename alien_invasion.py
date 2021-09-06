@@ -152,15 +152,15 @@ class AlienInvasion:
 
         # Repopulate alien fleet once all are killed.
         if not self.aliens:
-            self.bullets.empty() # Destroy existing bullets
-            self._create_fleet()
-            self.settings.increase_speed()
-
             # Increase the level
             self.stats.level += 1
             self.sb.prep_level()
 
-    
+            self.bullets.empty() # Destroy existing bullets
+            self._create_fleet()
+            self.settings.increase_speed()
+
+                
     def _update_aliens(self):
         """Update the positions of all aliens in the fleet."""
         self._check_fleet_edges()
@@ -225,6 +225,10 @@ class AlienInvasion:
             ) - ship_height)
         number_rows = (available_space_y // (2 * alien_height)) - 2 
         # Reduced alien rows by two so the game is more playable.
+
+        # Create a limit for the number of rows and columns based on what level
+        if self.stats.level <= number_rows:
+            number_rows = self.stats.level
 
         # Create full fleet of aliens
         for row_number in range(number_rows):
