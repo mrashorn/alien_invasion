@@ -13,6 +13,7 @@ class Scoreboard:
         self.screen_rect = self.screen.get_rect()
         self.settings = ai_game.settings
         self.stats = ai_game.stats
+        self.write_high_score = False
 
         # Font settings for the scoreboard
         self.text_color = (200, 200, 200)
@@ -83,5 +84,6 @@ class Scoreboard:
     def check_high_score(self):
         """Check to see if there's a new high score."""
         if self.stats.score > self.stats.high_score:
+            self.write_high_score = True
             self.stats.high_score = self.stats.score
             self.prep_high_score()

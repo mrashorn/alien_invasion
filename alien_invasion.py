@@ -100,6 +100,8 @@ class AlienInvasion:
         elif event.key == pygame.K_LEFT:
             self.ship.moving_left = True
         elif event.key == pygame.K_q:
+            if self.sb.write_high_score:
+                self.stats.write_high_score()
             sys.exit() # Exits the game with q key press.
         elif event.key == pygame.K_SPACE:
             self._fire_bullet()
