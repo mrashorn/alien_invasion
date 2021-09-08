@@ -8,6 +8,8 @@ from alien import Alien
 from game_stats import GameStats
 from button import Button
 from scoreboard import Scoreboard
+from random import randint
+from shooter import ShooterAlien
 
 class AlienInvasion:
     """Overall class to manage game assets and behavior."""
@@ -223,8 +225,7 @@ class AlienInvasion:
         ship_height = self.ship.rect.height
         available_space_y = (self.settings.screen_height - (3 * alien_height
             ) - ship_height)
-        number_rows = (available_space_y // (2 * alien_height)) - 2 
-        # Reduced alien rows by two so the game is more playable.
+        number_rows = (available_space_y // (2 * alien_height)) - 1 
 
         # Create a limit for the number of rows and columns based on what level
         if self.stats.level <= number_rows:
@@ -235,10 +236,18 @@ class AlienInvasion:
             for alien_number in range(number_aliens_x):
                 self._create_alien(alien_number, row_number)
 
+        # Quick loop to check how many aliens can shoot in the fleet.
+        for alien in self.aliens:
+            if alien.can_shoot == True:
+                print("Alien is a shooter.")
+
         
     def _create_alien(self, alien_number, row_number):
-        # Create an alien and place it in row.
-        alien = Alien(self)
+        # Create an alien or shooter alien (1 in 10) and place it in row.
+        if(randint(1, 10)) == 1:
+            alien = ShooterAlien(self)
+        else:
+            alien = Alien(self)
         alien_width, alien_height = alien.rect.size
         alien.x = alien_width + 2*alien_width * alien_number
         alien.rect.x = alien.x
@@ -274,6 +283,7 @@ class AlienInvasion:
         # Draw the play button if the game is inactive. 
         if not self.stats.game_active:
             self.play_button.draw_button()
+
 
         pygame.display.flip()
           
