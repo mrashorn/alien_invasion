@@ -23,7 +23,3 @@ class ShooterAlien(Alien):
         self.can_shoot = True
 
 
-
-
-
-        

@@ -16,6 +16,7 @@ class Settings:
         self.bullet_height = 15
         self.bullet_color = (200, 200, 200)
         self.bullets_allowed = 8
+        self.alien_bullet_color = (204, 0, 0)
         
         # Alien settings
         self.fleet_drop_speed = 10  # normally set to 5 or 10
@@ -34,6 +35,7 @@ class Settings:
         self.ship_speed = 0.7
         self.bullet_speed = 1.5
         self.alien_speed = 0.2
+        self.alien_bullet_speed = 0.5
 
         # fleet direction 1 represents right, -1 represents left
         self.fleet_direction = 1

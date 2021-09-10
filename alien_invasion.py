@@ -30,8 +30,7 @@ class AlienInvasion:
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
-
-        self._create_fleet()
+        self.shooters = pygame.sprite.Group()
 
         # Make the play button
         self.play_button = Button(self, "Play")
@@ -168,6 +167,7 @@ class AlienInvasion:
         self._check_fleet_edges()
         self.aliens.update()
 
+
         # Look for alien-ship collisions. 
         if pygame.sprite.spritecollideany(self.ship, self.aliens):
             self._ship_hit()
@@ -236,10 +236,11 @@ class AlienInvasion:
             for alien_number in range(number_aliens_x):
                 self._create_alien(alien_number, row_number)
 
-        # Quick loop to check how many aliens can shoot in the fleet.
+        # Loop to add any shooter aliens to their own shooter group.
         for alien in self.aliens:
             if alien.can_shoot == True:
-                print("Alien is a shooter.")
+                self.shooters.add(alien)
+
 
         
     def _create_alien(self, alien_number, row_number):
