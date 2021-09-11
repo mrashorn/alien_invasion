@@ -9,6 +9,7 @@ from game_stats import GameStats
 from button import Button
 from scoreboard import Scoreboard
 from random import randint
+from random import uniform
 from shooter import ShooterAlien
 
 class AlienInvasion:
@@ -31,6 +32,7 @@ class AlienInvasion:
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
         self.shooters = pygame.sprite.Group()
+        self.alien_bullets = pygame.sprite.Group()
 
         # Make the play button
         self.play_button = Button(self, "Play")
@@ -45,6 +47,8 @@ class AlienInvasion:
                 self.ship.update()
                 self._update_bullets()
                 self._update_aliens()
+                self._update_alien_bullets()
+                self._update_alien_timer()
 
             self._update_screen()
         
@@ -93,6 +97,8 @@ class AlienInvasion:
         # Hide the mouse cursor
         pygame.mouse.set_visible(False)
 
+        # Create the alien bullet timer
+        self._reset_alien_timer()
 
     def _check_keydown_events(self, event):
         """Respond to keypresses."""
@@ -198,6 +204,38 @@ class AlienInvasion:
         else: 
             self.stats.game_active = False
             pygame.mouse.set_visible(True)
+
+
+    def _update_alien_timer(self):
+        """Increment the remaining time until another alien shoots."""
+        self.alien_timer -= self.settings.dt
+
+        if self.alien_timer <= 0:
+            self._fire_alien_bullet()
+            self._reset_alien_timer() 
+
+
+    def _fire_alien_bullet(self):
+        """Fire a single bullet from a random shooter alien."""
+        # First choose a random shooter alien to shoot from. 
+        shooter = self.shooters[randint(0, len(self.shooters)-1)]
+        new_bullet = AlienBullet(self, shooter)
+        self.alien_bullets.add(new_bullet)
+
+
+    def _update_alien_bullets(self):
+        """Update the positions of the alien bullets and get rid of old bullets."""
+        self.alien_bullets.update()
+
+        # Get rid of bullets off screen
+        for bullet in self.alien_bullets.copy():
+            if bullet.rect.top >= self.settings.screen_height:
+                self.alien_bullets.remove(bullet)
+
+
+    def _reset_alien_timer(self):
+        """Reset the alien shooting countdown."""
+        self.alien_timer = uniform(2, 10)
 
 
     def _check_aliens_bottom(self):

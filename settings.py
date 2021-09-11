@@ -20,6 +20,7 @@ class Settings:
         
         # Alien settings
         self.fleet_drop_speed = 10  # normally set to 5 or 10
+        self.dt = 0.1 # how fast the alien shooter timer counts down
 
         # How quickly the game speeds up
         self.speedup_scale = 1.1
