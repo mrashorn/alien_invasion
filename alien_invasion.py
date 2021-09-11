@@ -4,6 +4,7 @@ import pygame
 from settings import Settings
 from ship import Ship
 from bullet import Bullet
+from bullet_alien import AlienBullet 
 from alien import Alien
 from game_stats import GameStats
 from button import Button
@@ -11,6 +12,7 @@ from scoreboard import Scoreboard
 from random import randint
 from random import uniform
 from shooter import ShooterAlien
+
 
 class AlienInvasion:
     """Overall class to manage game assets and behavior."""
@@ -48,7 +50,9 @@ class AlienInvasion:
                 self._update_bullets()
                 self._update_aliens()
                 self._update_alien_bullets()
-                self._update_alien_timer()
+
+                if self.shooters:
+                    self._update_alien_timer()
 
             self._update_screen()
         
@@ -211,6 +215,7 @@ class AlienInvasion:
         self.alien_timer -= self.settings.dt
 
         if self.alien_timer <= 0:
+            print("Timer zero.")
             self._fire_alien_bullet()
             self._reset_alien_timer() 
 
@@ -218,9 +223,10 @@ class AlienInvasion:
     def _fire_alien_bullet(self):
         """Fire a single bullet from a random shooter alien."""
         # First choose a random shooter alien to shoot from. 
-        shooter = self.shooters[randint(0, len(self.shooters)-1)]
-        new_bullet = AlienBullet(self, shooter)
-        self.alien_bullets.add(new_bullet)
+        for shooter in self.shooters:
+            print("Alien shoots bullet.")
+            new_bullet = AlienBullet(self, shooter.rect.x, shooter.rect.y)
+            self.alien_bullets.add(new_bullet)
 
 
     def _update_alien_bullets(self):
@@ -235,7 +241,7 @@ class AlienInvasion:
 
     def _reset_alien_timer(self):
         """Reset the alien shooting countdown."""
-        self.alien_timer = uniform(2, 10)
+        self.alien_timer = uniform(2, 20)
 
 
     def _check_aliens_bottom(self):
@@ -312,8 +318,13 @@ class AlienInvasion:
         """Updates images on screen, flip to new screen."""
         self.screen.fill(self.settings.bg_color)
         self.ship.blitme()
+        
+        # Draw all bullets to screen
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
+        for alien_bullet in self.alien_bullets.sprites():
+            alien_bullet.draw_bullet()
+
         self.aliens.draw(self.screen)
 
         # Draw the scoreboard
