@@ -225,7 +225,8 @@ class AlienInvasion:
         # First choose a random shooter alien to shoot from. 
         for shooter in self.shooters:
             print("Alien shoots bullet.")
-            new_bullet = AlienBullet(self, shooter.rect.x, shooter.rect.y)
+            new_bullet = AlienBullet(self, shooter.rect.x, shooter.rect.y,
+                    shooter.rect.width, shooter.rect.height)
             self.alien_bullets.add(new_bullet)
 
 
