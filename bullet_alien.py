@@ -14,6 +14,7 @@ class AlienBullet(Sprite):
         # Create an alien bullet at (0, 0) then set correct position
         self.rect = pygame.Rect(0, 0, self.settings.bullet_width,
                 self.settings.bullet_height)
+
         self.rect.midtop = (shooter_x + shooter_width/2, shooter_y + shooter_height/2)
 
         # Store the bullet's position as a decimal value

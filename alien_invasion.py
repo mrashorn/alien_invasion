@@ -11,6 +11,7 @@ from button import Button
 from scoreboard import Scoreboard
 from random import randint
 from random import uniform
+from random import choice
 from shooter import ShooterAlien
 
 
@@ -39,7 +40,11 @@ class AlienInvasion:
         # Make the play button
         self.play_button = Button(self, "Play")
 
-        
+        # Add the shooter aliens coordinates to a list so we can randomize later
+        self.shooter_x_coords = []
+        self.shooter_y_coords = []
+
+
     def run_game(self):
         """Start the main loop for the game."""
         while True:
@@ -177,6 +182,14 @@ class AlienInvasion:
         self._check_fleet_edges()
         self.aliens.update()
 
+        # update alien coordinates 
+        # Clear the old coordinates
+        self.shooter_x_coords = []
+        self.shooter_y_coords = []
+        # Add the current coordinates
+        for alien in self.shooters:
+            self.shooter_x_coords.append(alien.rect.x)
+            self.shooter_y_coords.append(alien.rect.y)
 
         # Look for alien-ship collisions. 
         if pygame.sprite.spritecollideany(self.ship, self.aliens):
@@ -215,7 +228,6 @@ class AlienInvasion:
         self.alien_timer -= self.settings.dt
 
         if self.alien_timer <= 0:
-            print("Timer zero.")
             self._fire_alien_bullet()
             self._reset_alien_timer() 
 
@@ -223,11 +235,14 @@ class AlienInvasion:
     def _fire_alien_bullet(self):
         """Fire a single bullet from a random shooter alien."""
         # First choose a random shooter alien to shoot from. 
-        for shooter in self.shooters:
-            print("Alien shoots bullet.")
-            new_bullet = AlienBullet(self, shooter.rect.x, shooter.rect.y,
-                    shooter.rect.width, shooter.rect.height)
-            self.alien_bullets.add(new_bullet)
+        shooter_rect_x = choice(self.shooter_x_coords) # random.choice
+        shooter_rect_y = choice(self.shooter_y_coords)
+
+        alien = Alien(self)
+
+        new_bullet = AlienBullet(self, shooter_rect_x, shooter_rect_y,
+                alien.rect.width, alien.rect.height)
+        self.alien_bullets.add(new_bullet)
 
 
     def _update_alien_bullets(self):
@@ -242,7 +257,7 @@ class AlienInvasion:
 
     def _reset_alien_timer(self):
         """Reset the alien shooting countdown."""
-        self.alien_timer = uniform(2, 20)
+        self.alien_timer = uniform(2, self.settings.timer_max)
 
 
     def _check_aliens_bottom(self):
@@ -281,13 +296,13 @@ class AlienInvasion:
             for alien_number in range(number_aliens_x):
                 self._create_alien(alien_number, row_number)
 
+
         # Loop to add any shooter aliens to their own shooter group.
         for alien in self.aliens:
             if alien.can_shoot == True:
                 self.shooters.add(alien)
+                        
 
-
-        
     def _create_alien(self, alien_number, row_number):
         # Create an alien or shooter alien (1 in 10) and place it in row.
         if(randint(1, 10)) == 1:

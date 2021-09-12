@@ -28,15 +28,19 @@ class Settings:
         # How quickly the alien point values increase
         self.score_scale = 1.5
 
+        # amount of time the window for random alien shots decreases per level
+        self.timer_decrement = 0.5
+
         self.initialize_dynamic_settings()
 
 
     def initialize_dynamic_settings(self):
         """Initialize settings that change throughout the game."""
-        self.ship_speed = 0.7
-        self.bullet_speed = 1.5
-        self.alien_speed = 0.2
+        self.ship_speed = 0.6
+        self.bullet_speed = 1.2
+        self.alien_speed = 0.15
         self.alien_bullet_speed = 0.5
+        self.timer_max = 15
 
         # fleet direction 1 represents right, -1 represents left
         self.fleet_direction = 1
@@ -51,5 +55,10 @@ class Settings:
         self.bullet_speed *= self.speedup_scale
         self.alien_speed *= self.speedup_scale
         self.alien_points = int(self.alien_points * self.score_scale) # so we only get integers
+
+        if self.timer_max > 5.0:
+            self.timer_max -= self.timer_decrement
+
+        print("Speed increased!")
 
         
