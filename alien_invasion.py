@@ -151,6 +151,7 @@ class AlienInvasion:
                     self.bullets.remove(bullet)
 
         self._check_bullet_collisions()
+        self._check_bullet_ship_collisions()
 
 
     def _check_bullet_collisions(self):
@@ -176,6 +177,12 @@ class AlienInvasion:
             self._create_fleet()
             self.settings.increase_speed()
 
+
+    def _check_bullet_ship_collisions(self):
+        """Check if any alien bullets hit the player's ship."""
+        if pygame.sprite.spritecollideany(self.ship, self.alien_bullets):
+            self._ship_hit()
+
                 
     def _update_aliens(self):
         """Update the positions of all aliens in the fleet."""
@@ -194,7 +201,6 @@ class AlienInvasion:
         # Look for alien-ship collisions. 
         if pygame.sprite.spritecollideany(self.ship, self.aliens):
             self._ship_hit()
-            print("Ship hit!!")
 
         # Look for aliens hitting the bottom of the screen
         self._check_aliens_bottom()
@@ -211,6 +217,7 @@ class AlienInvasion:
             # Get rid of any remaining aliens and bullets
             self.aliens.empty()
             self.bullets.empty()
+            self.alien_bullets.empty()
 
             # Create a new fleet and center the ship
             self._create_fleet()
@@ -236,7 +243,10 @@ class AlienInvasion:
         """Fire a single bullet from a random shooter alien."""
         # First choose a random shooter alien to shoot from. 
         shooter_rect_x = choice(self.shooter_x_coords) # random.choice
-        shooter_rect_y = choice(self.shooter_y_coords)
+        # Find which shooter we randomly selected.
+        shooter_index = self.shooter_x_coords.index(shooter_rect_x)
+        # Find the y rect value of that random shooter.
+        shooter_rect_y = self.shooter_y_coords[shooter_index]
 
         alien = Alien(self)
 
